@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">BestMovieV3</string>
+    <string name="title_home">Home</string>
+    <string name="title_movie">Movie</string>
+    <string name="title_tv_show">Tv Show</string>
+    <string name="lorem">lorem ipsum dolor amet</string>
+    <string name="overview">Overview :</string>
+    <string name="director">Director :</string>
+    <string name="genre">Genre :</string>
+    <string name="top_cast">Top Cast :</string>
+    <string name="change_language_settings">Change Language Settings</string>
+    <string name="release" translatable="false">Release :</string>
+    <string name="popularity">Popularity :</string>
+    <string name="language">Language :</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="favorite">Favorite</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="delete">delete</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Insert movie title</string>
+    <string name="search_movie">Search Movie</string>
+    <string name="Search_tvshow">Search Tv show</string>
+    <string name="instructions">Please search for the movie or TV show you want in the search menu above.</string>
+    <string name="appwidget_text">Favorite</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_text">No data</string>
+    <string name="reminder">Reminder</string>
+    <string name="setting">Setting</string>
+    <string name="daily_remainder">Daily Remainder</string>
+    <string name="release_reminder">Release Reminder</string>
+    <string name="daily_remainder_text">Pengingat untuk membuka aplikasi setiap hari agar mengetahui update film terbaru</string>
+    <string name="release_remainder_text">Pengingat film yang rilis hari ini</string>
+    <string name="loading">Loading...</string>
+
+</resources>

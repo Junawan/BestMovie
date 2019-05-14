@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">BestMovieV3</string>
+    <string name="title_home">Home</string>
+    <string name="title_tv_show">Acara TV</string>
+    <string name="title_movie">Film</string>
+    <string name="lorem">lorem ipsum dolor amet</string>
+    <string name="overview">Sinopsis :</string>
+    <string name="director">Sutradara :</string>
+    <string name="genre">Aliran :</string>
+    <string name="top_cast">Pemeran Teratas :</string>
+    <string name="change_language_settings">Ubah Bahasa</string>
+    <string name="popularity">Popularitas :</string>
+    <string name="language">Bahasa :</string>
+    <string name="hello_blank_fragment">Ini fragment kosong</string>
+    <string name="favorite">Favorite</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="action_settings">Pengaturan</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="delete">Hapus</string>
+    <string name="search">Cari</string>
+    <string name="search_movie">Cari film</string>
+    <string name="Search_tvshow">Cari acara TV</string>
+    <string name="appwidget_text">Favorit</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_text">Tidak ada data</string>
+    <string name="search_hint">Masukkan judul film</string>
+    <string name="instructions">Silahkan cari film atau acara TV yang anda inginkan pada menu pencarian diatas.</string>
+    <string name="reminder">Pengingat</string>
+    <string name="setting">Pengaturan</string>
+    <string name="daily_remainder">Pengingat harian</string>
+    <string name="release_reminder">pengingat release film</string>
+    <string name="daily_remainder_text">Pengingat untuk membuka aplikasi setiap hari agar mengetahui update film terbaru</string>
+    <string name="release_remainder_text">Pengingat film yang rilis hari ini</string>
+    <string name="loading">Loading...</string>
+</resources>
