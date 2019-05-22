@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.SearchTvActivity">
+    <Button
+        android:id="@+id/button_scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorAccent"
+        android:text="@string/scan_qr_code"
+        android:textStyle="bold" />
     <ProgressBar
         android:id="@+id/progressBarSrc"
         style="?android:attr/progressBarStyle"
@@ -19,6 +30,10 @@
         android:id="@+id/rv_search_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_below="@id/button_scan"
         tools:listitem="@layout/item_row_movie"/>
 
 </RelativeLayout>
