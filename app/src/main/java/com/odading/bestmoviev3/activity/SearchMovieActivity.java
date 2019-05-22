@@ -1,7 +1,6 @@
 package com.odading.bestmoviev3.activity;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +9,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.odading.bestmoviev3.R;
 import com.odading.bestmoviev3.adapter.SearchAdapter;
 import com.odading.bestmoviev3.aloader.SearchAsyncTaskLoader;
@@ -21,9 +22,11 @@ import com.odading.bestmoviev3.item.SearchItem;
 
 import java.util.ArrayList;
 
-public class SearchMovieActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<SearchItem>> {
-    RecyclerView rvSearch;
-    SearchAdapter searchAdapter;
+public class SearchMovieActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<SearchItem>>, View.OnClickListener {
+    private RecyclerView rvSearch;
+    private SearchAdapter searchAdapter;
+    private Button btnscanQr;
+    IntentIntegrator intentIntegrator;
 
     public static final String EXTRAS_TITLES = "EXTRAS_TITLES";
 
@@ -41,6 +44,9 @@ public class SearchMovieActivity extends AppCompatActivity implements LoaderMana
         searchAdapter.notifyDataSetChanged();
         rvSearch.setAdapter(searchAdapter);
 
+        btnscanQr = findViewById(R.id.button_scan);
+        btnscanQr.setOnClickListener(this);
+
         Bundle bundle = new Bundle();
         String title = bundle.getString(EXTRAS_TITLES);
 
@@ -52,35 +58,6 @@ public class SearchMovieActivity extends AppCompatActivity implements LoaderMana
         getSupportActionBar().setTitle(titleBar);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        if (searchManager != null) {
-            SearchView searchView = (SearchView) (menu.findItem(R.id.search)).getActionView();
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setQueryHint(getResources().getString(R.string.search_hint));
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(EXTRAS_TITLES, query);
-                    getSupportLoaderManager().restartLoader(0, bundle, SearchMovieActivity.this);
-
-                    Toast.makeText(SearchMovieActivity.this, query, Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newtext) {
-                    return false;
-                }
-            });
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @NonNull
     @Override
@@ -100,5 +77,40 @@ public class SearchMovieActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoaderReset(@NonNull Loader<ArrayList<SearchItem>> loader) {
         searchAdapter.setData(null);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.button_scan) {
+            intentIntegrator = new IntentIntegrator(this);
+            intentIntegrator.initiateScan();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(this, "Hasil tidak ditemukan", Toast.LENGTH_SHORT).show();
+            }else{
+                // jika qrcode berisi data
+                try{
+                    String qrCode = result.getContents();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(EXTRAS_TITLES, qrCode);
+                    getSupportLoaderManager().restartLoader(0, bundle, SearchMovieActivity.this);
+
+                    Toast.makeText(SearchMovieActivity.this, qrCode, Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    // jika format encoded tidak sesuai maka hasil
+                    // ditampilkan ke toast
+                    Toast.makeText(this, result.getContents(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }else{
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
