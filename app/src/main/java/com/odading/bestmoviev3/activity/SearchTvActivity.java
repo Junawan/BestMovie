@@ -1,7 +1,6 @@
 package com.odading.bestmoviev3.activity;
 
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +9,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.odading.bestmoviev3.R;
 import com.odading.bestmoviev3.adapter.SearchTvAdapter;
 import com.odading.bestmoviev3.aloader.SearchTvAsyncTaskLoader;
@@ -21,11 +22,13 @@ import com.odading.bestmoviev3.item.SearchTvItem;
 
 import java.util.ArrayList;
 
-public class SearchTvActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<SearchTvItem>> {
+public class SearchTvActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<SearchTvItem>>, View.OnClickListener {
     RecyclerView rvSearch;
     SearchTvAdapter searchTvAdapter;
 
     public static final String EXTRAS_TITLES = "EXTRAS_TITLES";
+    private Button btnscanQr;
+    IntentIntegrator intentIntegrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,9 @@ public class SearchTvActivity extends AppCompatActivity implements LoaderManager
         searchTvAdapter.notifyDataSetChanged();
         rvSearch.setAdapter(searchTvAdapter);
 
+        btnscanQr = findViewById(R.id.button_scan);
+        btnscanQr.setOnClickListener(this);
+
         Bundle bundle = new Bundle();
         String title = bundle.getString(EXTRAS_TITLES);
 
@@ -51,36 +57,6 @@ public class SearchTvActivity extends AppCompatActivity implements LoaderManager
 
     private void setActinBarTitle(String titleBar) {
         getSupportActionBar().setTitle(titleBar);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        if (searchManager != null) {
-            SearchView searchView = (SearchView) (menu.findItem(R.id.search)).getActionView();
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setQueryHint(getResources().getString(R.string.search_hint));
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(EXTRAS_TITLES, query);
-                    getSupportLoaderManager().restartLoader(0, bundle, SearchTvActivity.this);
-
-                    Toast.makeText(SearchTvActivity.this, query, Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newtext) {
-                    return false;
-                }
-            });
-        }
-        return super.onCreateOptionsMenu(menu);
     }
 
     @NonNull
@@ -101,5 +77,40 @@ public class SearchTvActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onLoaderReset(@NonNull Loader<ArrayList<SearchTvItem>> loader) {
         searchTvAdapter.setData(null);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.button_scan) {
+            intentIntegrator = new IntentIntegrator(this);
+            intentIntegrator.initiateScan();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(this, "Hasil tidak ditemukan", Toast.LENGTH_SHORT).show();
+            }else{
+                // jika qrcode berisi data
+                try{
+                    String qrCode = result.getContents();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(EXTRAS_TITLES, qrCode);
+                    getSupportLoaderManager().restartLoader(0, bundle, SearchTvActivity.this);
+
+                    Toast.makeText(SearchTvActivity.this, qrCode, Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    // jika format encoded tidak sesuai maka hasil
+                    // ditampilkan ke toast
+                    Toast.makeText(this, result.getContents(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }else{
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
